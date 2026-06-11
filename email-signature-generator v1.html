@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Email Signature Generator — Zuuvi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Inter:wght@400;450;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gray-900: #0a0a0a;
+    --gray-700: #3a3a3a;
+    --gray-600: #7a7a7a;
+    --gray-200: #f5f5f5;
+    --white:    #ffffff;
+    --border:   #e8e8e8;
+    --accent:   #4a90e2;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --font: 'Barlow', Arial, sans-serif;
+  }
+
+  html, body {
+    font-family: var(--font);
+    background: #f2f2f2;
+    color: var(--gray-900);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* ── App layout ── */
+  .app {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    grid-column: 1 / -1;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar-logo { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: var(--gray-900); }
+  .topbar-logo span { color: var(--accent); }
+  .topbar-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+  .topbar-subtitle { font-size: 13px; color: var(--gray-600); font-weight: 400; }
+
+  /* ── Form panel ── */
+  .panel {
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 28px 28px 120px;
+    overflow-y: auto;
+    height: calc(100vh - 56px);
+  }
+
+  .panel-section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.6px;
+    text-transform: uppercase; color: var(--gray-600);
+    margin-bottom: 14px; margin-top: 28px;
+  }
+  .panel-section-title:first-child { margin-top: 0; }
+
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 5px; }
+  .field input[type="text"],
+  .field input[type="url"],
+  .field input[type="tel"],
+  .field input[type="email"] {
+    width: 100%; height: 38px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    padding: 0 12px; font-family: var(--font); font-size: 13.5px;
+    color: var(--gray-900); background: var(--white);
+    transition: border-color 0.15s; outline: none;
+  }
+  .field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .field input::placeholder { color: #c0c0c0; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Toggle */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .toggle-row label { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+  .toggle { position: relative; width: 36px; height: 20px; cursor: pointer; }
+  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle-track { position: absolute; inset: 0; border-radius: 20px; background: var(--border); transition: background 0.2s; }
+  .toggle input:checked + .toggle-track { background: var(--accent); }
+  .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--white); box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: left 0.2s; }
+  .toggle input:checked ~ .toggle-thumb { left: 19px; }
+
+  /* ── Copy button ── */
+  .copy-bar {
+    position: fixed; bottom: 0; left: 0; width: 420px;
+    padding: 16px 28px;
+    background: linear-gradient(to top, var(--white) 80%, transparent);
+  }
+  .btn-copy {
+    width: 100%; height: 44px; background: var(--gray-900); color: var(--white);
+    border: none; border-radius: var(--radius-sm); font-family: var(--font);
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s, transform 0.1s; letter-spacing: 0.1px;
+  }
+  .btn-copy:hover { background: #222; }
+  .btn-copy:active { transform: scale(0.98); }
+  .btn-copy.copied { background: #16a34a; }
+
+  /* ── Preview panel ── */
+  .preview-panel {
+    padding: 36px 40px; overflow-y: auto;
+    height: calc(100vh - 56px);
+    display: flex; flex-direction: column; gap: 24px;
+    align-items: flex-start;
+  }
+  .preview-label { font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--gray-600); }
+  .preview-card { background: var(--border); border-radius: var(--radius-lg); overflow: hidden; display: table; }
+  .preview-hint { font-size: 12px; color: var(--gray-600); line-height: 1.6; max-width: 600px; }
+  .preview-hint strong { color: var(--gray-700); font-weight: 600; }
+
+  /* ══════════════════════════════════════════
+     SIGNATURE STYLES — matching Figma exactly
+     ══════════════════════════════════════════ */
+
+  /* Outer wrapper */
+  #sig-root { width: 600px; font-family: 'Barlow', Arial, sans-serif; background: #ffffff; padding: 16px; box-sizing: border-box; }
+
+  /* Profile section: photo+text on left, icons on right */
+  #sig-profile-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+  }
+
+  /* Left: photo + description side by side */
+  #sig-profile-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  /* Photo / placeholder — 128×128 rounded rect */
+  #sig-photo-wrap {
+    width: 128px;
+    height: 128px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #sig-photo-wrap img {
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Description column */
+  #sig-description {
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* spacer-4 = 1.5rem = 24px */
+    justify-content: center;
+  }
+
+  /* Name + title group */
+  #sig-name-title {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* spacer-2 */
+  }
+
+  #sig-name {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    font-family: 'Barlow', Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 28px;
+    letter-spacing: -0.5px;
+    color: #0a0a0a;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  #sig-job-title {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    letter-spacing: 0px;
+    color: #7a7a7a;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* Contact info group */
+  #sig-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* spacer-2 */
+  }
+
+  .sig-contact-line {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    letter-spacing: 0px;
+    color: #0a0a0a;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* Icons column — right side, vertically centred */
+  #sig-icons-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-self: stretch;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .sig-icon-btn {
+    width: 37.33px;
+    height: 37.33px;
+    border-radius: 156px;
+    background: #f5f5f5; /* gray-200, as per Figma */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  /* Banner */
+  #sig-banner-wrap { margin-top: 16px; }
+
+  #sig-banner-placeholder {
+    width: 100%; height: 150px;
+    border-radius: 8px;
+    background: #f0f0f0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #sig-banner-placeholder span {
+    font-family: 'Barlow', Arial, sans-serif;
+    font-size: 13px; color: #aaa;
+  }
+
+  #sig-banner-img {
+    width: 100%; height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Disclaimer */
+  #sig-disclaimer {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    margin-top: 16px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 9px; font-weight: 400;
+    line-height: 14px; color: #7a7a7a;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-logo">Zuuvi<span>.</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-subtitle">Email Signature Generator</div>
+  </header>
+
+  <!-- Form panel -->
+  <aside class="panel">
+
+    <div class="panel-section-title">Identity</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="f-name">Full name</label>
+        <input id="f-name" type="text" placeholder="Simon André Olesen" value="Your name" />
+      </div>
+      <div class="field">
+        <label for="f-title">Job title</label>
+        <input id="f-title" type="text" placeholder="Lead Designer" value="Your job title" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="f-company">Company</label>
+      <input id="f-company" type="text" placeholder="Zuuvi" value="Zuuvi" />
+    </div>
+
+    <div class="panel-section-title">Contact</div>
+
+    <div class="field">
+      <label for="f-phone">Phone</label>
+      <input id="f-phone" type="tel" placeholder="+45 4231 0902" value="+00 0000 0000" />
+    </div>
+
+    <div class="field">
+      <label for="f-email">Email address</label>
+      <input id="f-email" type="email" placeholder="sao@zuuvi.com" value="initials@zuuvi.com" />
+    </div>
+
+    <div class="panel-section-title">Links</div>
+
+    <div class="field">
+      <label for="f-website">Website URL</label>
+      <input id="f-website" type="url" placeholder="https://zuuvi.com" value="https://zuuvi.com" />
+    </div>
+
+    <div class="field">
+      <label for="f-linkedin">LinkedIn URL</label>
+      <input id="f-linkedin" type="url" placeholder="https://linkedin.com/company/..." value="https://www.linkedin.com/company/zuuvi" />
+    </div>
+
+    <div class="field">
+      <label for="f-bookdemo">Book demo URL</label>
+      <input id="f-bookdemo" type="url" placeholder="https://zuuvi.com/schedule-demo" value="https://www.zuuvi.com/schedule-demo" />
+    </div>
+
+    <div class="panel-section-title">Profile photo</div>
+
+    <div class="field">
+      <label for="f-photo">Photo URL</label>
+      <input id="f-photo" type="url" placeholder="https://..." value="" />
+    </div>
+
+    <div class="panel-section-title">Promo banner</div>
+
+    <div class="toggle-row">
+      <label for="t-banner">Show banner</label>
+      <label class="toggle">
+        <input type="checkbox" id="t-banner" checked />
+        <span class="toggle-track"></span>
+        <span class="toggle-thumb"></span>
+      </label>
+    </div>
+
+    <div id="banner-fields">
+      <div class="field">
+        <label for="f-banner-img">Banner image URL</label>
+        <input id="f-banner-img" type="url" placeholder="https://..." value="" />
+      </div>
+      <div class="field">
+        <label for="f-banner-link">Banner link URL</label>
+        <input id="f-banner-link" type="url" placeholder="https://zuuvi.com/campaign" value="" />
+      </div>
+    </div>
+
+    <div class="panel-section-title">Disclaimer</div>
+
+    <div class="toggle-row">
+      <label for="t-disclaimer">Show disclaimer</label>
+      <label class="toggle">
+        <input type="checkbox" id="t-disclaimer" checked />
+        <span class="toggle-track"></span>
+        <span class="toggle-thumb"></span>
+      </label>
+    </div>
+
+  </aside>
+
+  <!-- Copy button -->
+  <div class="copy-bar">
+    <button class="btn-copy" id="btn-copy" onclick="copySignature()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3a2 2 0 0 1 2-2h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Copy signature
+    </button>
+  </div>
+
+  <!-- Preview panel -->
+  <main class="preview-panel">
+    <div class="preview-label">Live preview</div>
+
+    <div class="preview-card">
+
+      <!-- ═══════════════════════════════════════
+           SIGNATURE — matches Figma node 21382:21756
+      ═══════════════════════════════════════ -->
+      <div id="sig-root">
+
+        <!-- Profile section -->
+        <div id="sig-profile-section">
+
+          <!-- Left: photo + text -->
+          <div id="sig-profile-content">
+
+            <!-- Photo -->
+            <div id="sig-photo-wrap"></div>
+
+            <!-- Name / title / contact -->
+            <div id="sig-description">
+
+              <div id="sig-name-title">
+                <p id="sig-name">Your name</p>
+                <p id="sig-job-title">Your job title</p>
+              </div>
+
+              <div id="sig-contact">
+                <p class="sig-contact-line" id="sig-phone">+00 0000 0000</p>
+                <p class="sig-contact-line" id="sig-email-text">initials@zuuvi.com</p>
+              </div>
+
+            </div>
+          </div><!-- /profile-content -->
+
+          <!-- Right: icon buttons -->
+          <div id="sig-icons-col">
+            <a class="sig-icon-btn" id="sig-icon-website" href="https://zuuvi.com" title="Website" target="_blank" rel="noopener">
+              <!-- Globe — #4a90e2 strokes -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="9.5" stroke="#4a90e2" stroke-width="1.5"/>
+                <ellipse cx="12" cy="12" rx="3.5" ry="9.5" stroke="#4a90e2" stroke-width="1.5"/>
+                <path d="M2.5 12h19" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M4.5 7.5h15M4.5 16.5h15" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </a>
+            <a class="sig-icon-btn" id="sig-icon-linkedin" href="https://www.linkedin.com/company/zuuvi" title="LinkedIn" target="_blank" rel="noopener">
+              <!-- LinkedIn — official icon -->
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18.5195 0H1.47656C0.660156 0 0 0.644531 0 1.44141V18.5547C0 19.3516 0.660156 20 1.47656 20H18.5195C19.3359 20 20 19.3516 20 18.5586V1.44141C20 0.644531 19.3359 0 18.5195 0ZM5.93359 17.043H2.96484V7.49609H5.93359V17.043ZM4.44922 6.19531C3.49609 6.19531 2.72656 5.42578 2.72656 4.47656C2.72656 3.52734 3.49609 2.75781 4.44922 2.75781C5.39844 2.75781 6.16797 3.52734 6.16797 4.47656C6.16797 5.42187 5.39844 6.19531 4.44922 6.19531ZM17.043 17.043H14.0781V12.4023C14.0781 11.2969 14.0586 9.87109 12.5352 9.87109C10.9922 9.87109 10.7578 11.0781 10.7578 12.3242V17.043H7.79688V7.49609H10.6406V8.80078H10.6797C11.0742 8.05078 12.043 7.25781 13.4844 7.25781C16.4883 7.25781 17.043 9.23438 17.043 11.8047V17.043Z" fill="#4A90E2"/>
+              </svg>
+            </a>
+            <a class="sig-icon-btn" id="sig-icon-bookdemo" href="https://www.zuuvi.com/schedule-demo" title="Book a demo" target="_blank" rel="noopener">
+              <!-- Calendar — #4a90e2 -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="5" width="18" height="16" rx="2" stroke="#4a90e2" stroke-width="1.5"/>
+                <path d="M3 10h18" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M8 3v4M16 3v4" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
+                <rect x="7" y="13.5" width="3" height="3" rx="0.5" fill="#4a90e2"/>
+              </svg>
+            </a>
+          </div>
+
+        </div><!-- /profile-section -->
+
+        <!-- Promo banner -->
+        <div id="sig-banner-wrap">
+          <div id="sig-banner-placeholder">
+            <span>Add a banner image URL above</span>
+          </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <p id="sig-disclaimer">The content of this message is confidential. If you have received it by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed and is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p>
+
+      </div><!-- /sig-root -->
+
+    </div><!-- /preview-card -->
+
+    <p class="preview-hint">
+      <strong>How to use:</strong> Click <em>Copy signature</em>, then open your email client's signature settings and paste. Works in Gmail, Outlook, and Apple Mail.
+    </p>
+
+    <!-- Fallback: shown if clipboard API can't write rich HTML -->
+    <div id="copy-fallback" style="display:none;margin-top:0;">
+      <p style="font-size:12px;font-weight:600;color:#3a3a3a;margin-bottom:8px;">
+        Your browser blocked the rich copy. Select all the code below and paste it into your email client's signature HTML editor instead:
+      </p>
+      <textarea id="copy-fallback-ta" readonly
+        style="width:100%;max-width:600px;height:120px;font-size:11px;font-family:monospace;border:1.5px solid #e8e8e8;border-radius:8px;padding:10px;resize:vertical;color:#3a3a3a;background:#fafafa;outline:none;"
+        onclick="this.select()"></textarea>
+    </div>
+  </main>
+
+</div><!-- /app -->
+
+<script>
+const $ = id => document.getElementById(id);
+const field = id => ($(id) ? $(id).value.trim() : '');
+
+// ── Live preview update ──────────────────────────────────────────────────────
+function update() {
+  const name     = field('f-name');
+  const title    = field('f-title');
+  const company  = field('f-company');
+  const phone    = field('f-phone');
+  const email    = field('f-email');
+  const website  = field('f-website');
+  const linkedin = field('f-linkedin');
+  const bookdemo = field('f-bookdemo');
+  const photoUrl = field('f-photo');
+  const bannerImg  = field('f-banner-img');
+  const bannerLink = field('f-banner-link');
+  const showBanner = $('t-banner').checked;
+  const showDisclaimer = $('t-disclaimer').checked;
+
+  // Name
+  $('sig-name').textContent = name || 'Your Name';
+
+  // Title — just the title, no company concatenation (matches Figma)
+  $('sig-job-title').textContent = title || '';
+  $('sig-job-title').style.display = title ? '' : 'none';
+
+  // Contact
+  $('sig-phone').textContent = phone;
+  $('sig-phone').style.display = phone ? '' : 'none';
+  $('sig-email-text').textContent = email;
+  $('sig-email-text').style.display = email ? '' : 'none';
+
+  // Photo
+  const wrap = $('sig-photo-wrap');
+  const existingImg = wrap.querySelector('img');
+  if (photoUrl) {
+    if (!existingImg) {
+      const img = document.createElement('img');
+      img.alt = name;
+      wrap.appendChild(img);
+    }
+    wrap.querySelector('img').src = photoUrl;
+    wrap.querySelector('img').alt = name;
+  } else {
+    if (existingImg) existingImg.remove();
+  }
+
+  // Icon hrefs
+  $('sig-icon-website').href  = website  || '#';
+  $('sig-icon-linkedin').href = linkedin || '#';
+  $('sig-icon-bookdemo').href = bookdemo || '#';
+
+  // Hide icon buttons with no URL
+  $('sig-icon-website').style.display  = website  ? '' : 'none';
+  $('sig-icon-linkedin').style.display = linkedin ? '' : 'none';
+  $('sig-icon-bookdemo').style.display = bookdemo ? '' : 'none';
+  $('sig-icons-col').style.display = (website || linkedin || bookdemo) ? '' : 'none';
+
+  // Banner
+  const bannerWrap = $('sig-banner-wrap');
+  if (!showBanner) {
+    bannerWrap.style.display = 'none';
+  } else {
+    bannerWrap.style.display = '';
+    const placeholder = $('sig-banner-placeholder');
+    let bannerEl = $('sig-banner-img');
+    let bannerLinkEl = $('sig-banner-link-el');
+
+    if (bannerImg) {
+      // Create img if needed
+      if (!bannerEl) {
+        bannerEl = document.createElement('img');
+        bannerEl.id = 'sig-banner-img';
+        bannerEl.alt = 'Promotional banner';
+        bannerEl.width = 600; bannerEl.height = 150;
+      }
+      bannerEl.src = bannerImg;
+      if (placeholder && placeholder.parentNode) placeholder.style.display = 'none';
+
+      // Wrap in <a> if link provided
+      if (bannerLink) {
+        if (!bannerLinkEl) {
+          bannerLinkEl = document.createElement('a');
+          bannerLinkEl.id = 'sig-banner-link-el';
+          bannerLinkEl.target = '_blank';
+          bannerLinkEl.rel = 'noopener';
+          bannerWrap.appendChild(bannerLinkEl);
+        }
+        bannerLinkEl.href = bannerLink;
+        if (!bannerLinkEl.contains(bannerEl)) bannerLinkEl.appendChild(bannerEl);
+      } else {
+        if (bannerLinkEl) {
+          bannerWrap.appendChild(bannerEl);
+        } else if (!bannerWrap.contains(bannerEl)) {
+          bannerWrap.appendChild(bannerEl);
+        }
+      }
+    } else {
+      if (placeholder) placeholder.style.display = '';
+      if (bannerEl) bannerEl.remove();
+      if (bannerLinkEl) { bannerLinkEl.remove(); }
+    }
+  }
+
+  // Disclaimer
+  $('sig-disclaimer').style.display = showDisclaimer ? '' : 'none';
+}
+
+// ── Banner toggle ────────────────────────────────────────────────────────────
+$('t-banner').addEventListener('change', () => {
+  $('banner-fields').style.display = $('t-banner').checked ? '' : 'none';
+  update();
+});
+
+// ── Wire all inputs ──────────────────────────────────────────────────────────
+document.querySelectorAll('input[type="text"], input[type="url"], input[type="tel"], input[type="email"]')
+  .forEach(el => el.addEventListener('input', update));
+$('t-disclaimer').addEventListener('change', update);
+
+// ── Build email-safe signature HTML ─────────────────────────────────────────
+function buildSignatureHTML() {
+  const name     = field('f-name')  || 'Your Name';
+  const title    = field('f-title');
+  const phone    = field('f-phone');
+  const email    = field('f-email');
+  const website  = field('f-website');
+  const linkedin = field('f-linkedin');
+  const bookdemo = field('f-bookdemo');
+  const photoUrl = field('f-photo');
+  const bannerImg  = field('f-banner-img');
+  const bannerLink = field('f-banner-link');
+  const showBanner     = $('t-banner').checked;
+  const showDisclaimer = $('t-disclaimer').checked;
+
+  const photoCell = photoUrl
+    ? `<img src="${esc(photoUrl)}" alt="${esc(name)}" width="128" height="128" style="width:128px;height:128px;object-fit:cover;border-radius:8px;display:block;" />`
+    : `<div style="width:128px;height:128px;border-radius:8px;background:#e8e8e8;display:block;"></div>`;
+
+  const iconStyle = `display:inline-flex;align-items:center;justify-content:center;width:37.33px;height:37.33px;border-radius:156px;background:#f5f5f5;text-decoration:none;`;
+
+  const svgGlobe = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.5" stroke="#4a90e2" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="3.5" ry="9.5" stroke="#4a90e2" stroke-width="1.5"/><path d="M2.5 12h19" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/><path d="M4.5 7.5h15M4.5 16.5h15" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  const svgLinkedIn = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.5195 0H1.47656C0.660156 0 0 0.644531 0 1.44141V18.5547C0 19.3516 0.660156 20 1.47656 20H18.5195C19.3359 20 20 19.3516 20 18.5586V1.44141C20 0.644531 19.3359 0 18.5195 0ZM5.93359 17.043H2.96484V7.49609H5.93359V17.043ZM4.44922 6.19531C3.49609 6.19531 2.72656 5.42578 2.72656 4.47656C2.72656 3.52734 3.49609 2.75781 4.44922 2.75781C5.39844 2.75781 6.16797 3.52734 6.16797 4.47656C6.16797 5.42187 5.39844 6.19531 4.44922 6.19531ZM17.043 17.043H14.0781V12.4023C14.0781 11.2969 14.0586 9.87109 12.5352 9.87109C10.9922 9.87109 10.7578 11.0781 10.7578 12.3242V17.043H7.79688V7.49609H10.6406V8.80078H10.6797C11.0742 8.05078 12.043 7.25781 13.4844 7.25781C16.4883 7.25781 17.043 9.23438 17.043 11.8047V17.043Z" fill="#4A90E2"/></svg>`;
+  const svgCalendar = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#4a90e2" stroke-width="1.5"/><path d="M3 10h18" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/><path d="M8 3v4M16 3v4" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/><rect x="7" y="13.5" width="3" height="3" rx="0.5" fill="#4a90e2"/></svg>`;
+
+  const makeIcon = (svg, url, label) => url
+    ? `<a href="${esc(url)}" title="${esc(label)}" target="_blank" rel="noopener" style="${iconStyle}">${svg}</a>`
+    : '';
+
+  const icons = [
+    makeIcon(svgGlobe,    website,  'Website'),
+    makeIcon(svgLinkedIn, linkedin, 'LinkedIn'),
+    makeIcon(svgCalendar, bookdemo, 'Book a demo'),
+  ].filter(Boolean);
+
+  const iconsCol = icons.length
+    ? `<td style="padding-left:16px;vertical-align:middle;">
+        <table cellpadding="0" cellspacing="0" border="0"><tr><td>
+          ${icons.join('<br style="line-height:8px;" />')}
+        </td></tr></table>
+      </td>`
+    : '';
+
+  const bannerHTML = (() => {
+    if (!showBanner || !bannerImg) return '';
+    const img = `<img src="${esc(bannerImg)}" alt="Promotional banner" width="600" height="150" style="width:600px;height:150px;object-fit:cover;border-radius:8px;display:block;" />`;
+    return `<tr><td colspan="3" style="padding-top:16px;">${bannerLink ? `<a href="${esc(bannerLink)}" target="_blank" rel="noopener">${img}</a>` : img}</td></tr>`;
+  })();
+
+  const disclaimerHTML = showDisclaimer
+    ? `<tr><td colspan="3" style="padding-top:16px;"><p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:9px;font-weight:400;line-height:14px;color:#7a7a7a;width:600px;">The content of this message is confidential. If you have received it by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed and is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p></td></tr>`
+    : '';
+
+  return `<table cellpadding="0" cellspacing="0" border="0" style="font-family:'Barlow',Arial,sans-serif;width:600px;border-collapse:collapse;background:#ffffff;padding:16px;">
+  <tr>
+    <td style="vertical-align:middle;padding-right:16px;width:128px;">${photoCell}</td>
+    <td style="vertical-align:middle;width:100%;">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr><td style="padding-bottom:8px;">
+          <p style="margin:0;font-family:'Barlow',Arial,sans-serif;font-size:24px;font-weight:700;line-height:28px;letter-spacing:-0.5px;color:#0a0a0a;white-space:nowrap;">${esc(name)}</p>
+        </td></tr>
+        ${title ? `<tr><td style="padding-bottom:24px;">
+          <p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:400;line-height:17px;color:#7a7a7a;white-space:nowrap;">${esc(title)}</p>
+        </td></tr>` : ''}
+        ${phone ? `<tr><td style="padding-bottom:8px;">
+          <p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:400;line-height:17px;color:#0a0a0a;white-space:nowrap;">${esc(phone)}</p>
+        </td></tr>` : ''}
+        ${email ? `<tr><td>
+          <p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:400;line-height:17px;color:#0a0a0a;white-space:nowrap;">${esc(email)}</p>
+        </td></tr>` : ''}
+      </table>
+    </td>
+    ${iconsCol}
+  </tr>
+  ${bannerHTML}
+  ${disclaimerHTML}
+</table>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function copySignature() {
+  const html = buildSignatureHTML();
+  const btn = $('btn-copy');
+  const fallback = $('copy-fallback');
+  const fallbackTa = $('copy-fallback-ta');
+
+  // Always attempt rich HTML clipboard (required for proper paste into email clients)
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
+    ]);
+    // Success — hide fallback, show confirmation
+    fallback.style.display = 'none';
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3a2 2 0 0 1 2-2h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copy signature`;
+    }, 2500);
+  } catch (e) {
+    // Rich clipboard blocked (file:// or browser restriction)
+    // Show the HTML source in a textarea for manual copy
+    fallbackTa.value = html;
+    fallback.style.display = 'block';
+    fallbackTa.select();
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3a2 2 0 0 1 2-2h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copy signature`;
+  }
+}
+
+// Init
+update();
+</script>
+</body>
+</html>
