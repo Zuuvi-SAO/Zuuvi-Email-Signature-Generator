@@ -11,7 +11,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gray-900: #0a0a0a;
+    --gray-900: #090720;
     --gray-700: #3a3a3a;
     --gray-600: #7a7a7a;
     --gray-200: #f5f5f5;
@@ -29,7 +29,7 @@
     background: #f2f2f2;
     color: var(--gray-900);
     min-height: 100vh;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.5;
   }
 
@@ -55,7 +55,7 @@
   .topbar-logo { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: var(--gray-900); }
   .topbar-logo span { color: var(--accent); }
   .topbar-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
-  .topbar-subtitle { font-size: 13px; color: var(--gray-600); font-weight: 400; }
+  .topbar-subtitle { font-size: 14px; color: var(--gray-600); font-weight: 400; }
 
   /* ── Form panel ── */
   .panel {
@@ -67,21 +67,21 @@
   }
 
   .panel-section-title {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.6px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.6px;
     text-transform: uppercase; color: var(--gray-600);
     margin-bottom: 14px; margin-top: 28px;
   }
   .panel-section-title:first-child { margin-top: 0; }
 
   .field { margin-bottom: 12px; }
-  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 5px; }
+  .field label { display: block; font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 5px; }
   .field input[type="text"],
   .field input[type="url"],
   .field input[type="tel"],
   .field input[type="email"] {
     width: 100%; height: 38px;
     border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-    padding: 0 12px; font-family: var(--font); font-size: 13.5px;
+    padding: 0 12px; font-family: var(--font); font-size: 14px;
     color: var(--gray-900); background: var(--white);
     transition: border-color 0.15s; outline: none;
   }
@@ -95,7 +95,7 @@
 
   /* Toggle */
   .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .toggle-row label { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+  .toggle-row label { font-size: 14px; font-weight: 600; color: var(--gray-700); }
   .toggle { position: relative; width: 36px; height: 20px; cursor: pointer; }
   .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
   .toggle-track { position: absolute; inset: 0; border-radius: 20px; background: var(--border); transition: background 0.2s; }
@@ -116,9 +116,9 @@
     display: flex; align-items: center; justify-content: center; gap: 8px;
     transition: background 0.15s, transform 0.1s; letter-spacing: 0.1px;
   }
-  .btn-copy:hover { background: #222; }
+  .btn-copy:hover { background: #1a1630; }
   .btn-copy:active { transform: scale(0.98); }
-  .btn-copy.copied { background: #16a34a; }
+  .btn-copy.copied { background: #4a90e2; }
 
   /* ── Preview panel ── */
   .preview-panel {
@@ -129,7 +129,7 @@
   }
   .preview-label { font-size: 11px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--gray-600); }
   .preview-card { background: var(--border); border-radius: var(--radius-lg); overflow: hidden; display: table; }
-  .preview-hint { font-size: 12px; color: var(--gray-600); line-height: 1.6; max-width: 600px; }
+  .preview-hint { font-size: 14px; color: var(--gray-600); line-height: 1.6; max-width: 600px; }
   .preview-hint strong { color: var(--gray-700); font-weight: 600; }
 
   /* ── Asset picker ── */
@@ -179,10 +179,42 @@
   }
   .asset-picker-item.selected .check { display: flex; }
   .asset-picker-empty {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--gray-600);
     font-style: italic;
     padding: 4px 0;
+  }
+  .picker-show-more {
+    grid-column: span 3;
+    text-align: center;
+    padding: 6px 0 2px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--font);
+    width: 100%;
+  }
+  .picker-show-more:hover { text-decoration: underline; }
+
+  .portrait-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.55), transparent);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 4px 5px 5px;
+    line-height: 1.2;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .asset-picker-item:hover .portrait-label,
+  .asset-picker-item.selected .portrait-label {
+    opacity: 1;
   }
 
   /* ══════════════════════════════════════════
@@ -350,7 +382,7 @@
 
   <!-- Top bar -->
   <header class="topbar">
-    <img src="https://www.zuuvi.com/hubfs/Zuuvi_Logo_SVG_2022%202.svg" alt="Zuuvi" style="height:24px;display:block;" />
+    <img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Zuuvi%20Logo.png" alt="Zuuvi" style="height:24px;display:block;" />
     <div class="topbar-divider"></div>
     <div class="topbar-subtitle">Email Signature Generator</div>
   </header>
@@ -406,6 +438,11 @@
     </div>
 
     <div class="panel-section-title">Profile photo</div>
+
+    <div class="field">
+      <label for="portrait-search">Search by name</label>
+      <input id="portrait-search" type="text" placeholder="e.g. Emma, Simon…" />
+    </div>
 
     <div id="photo-picker" class="asset-picker"></div>
 
@@ -498,28 +535,13 @@
           <!-- Right: icon buttons -->
           <div id="sig-icons-col">
             <a class="sig-icon-btn" id="sig-icon-website" href="https://zuuvi.com" title="Website" target="_blank" rel="noopener">
-              <!-- Globe — #4a90e2 strokes -->
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="9.5" stroke="#4a90e2" stroke-width="1.5"/>
-                <ellipse cx="12" cy="12" rx="3.5" ry="9.5" stroke="#4a90e2" stroke-width="1.5"/>
-                <path d="M2.5 12h19" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M4.5 7.5h15M4.5 16.5h15" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
+              <img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Website.png" alt="Website" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />
             </a>
             <a class="sig-icon-btn" id="sig-icon-linkedin" href="https://www.linkedin.com/company/zuuvi" title="LinkedIn" target="_blank" rel="noopener">
-              <!-- LinkedIn — official icon -->
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18.5195 0H1.47656C0.660156 0 0 0.644531 0 1.44141V18.5547C0 19.3516 0.660156 20 1.47656 20H18.5195C19.3359 20 20 19.3516 20 18.5586V1.44141C20 0.644531 19.3359 0 18.5195 0ZM5.93359 17.043H2.96484V7.49609H5.93359V17.043ZM4.44922 6.19531C3.49609 6.19531 2.72656 5.42578 2.72656 4.47656C2.72656 3.52734 3.49609 2.75781 4.44922 2.75781C5.39844 2.75781 6.16797 3.52734 6.16797 4.47656C6.16797 5.42187 5.39844 6.19531 4.44922 6.19531ZM17.043 17.043H14.0781V12.4023C14.0781 11.2969 14.0586 9.87109 12.5352 9.87109C10.9922 9.87109 10.7578 11.0781 10.7578 12.3242V17.043H7.79688V7.49609H10.6406V8.80078H10.6797C11.0742 8.05078 12.043 7.25781 13.4844 7.25781C16.4883 7.25781 17.043 9.23438 17.043 11.8047V17.043Z" fill="#4A90E2"/>
-              </svg>
+              <img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/LinkedIn.png" alt="LinkedIn" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />
             </a>
             <a class="sig-icon-btn" id="sig-icon-bookdemo" href="https://www.zuuvi.com/schedule-demo" title="Book a demo" target="_blank" rel="noopener">
-              <!-- Calendar — #4a90e2 -->
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="5" width="18" height="16" rx="2" stroke="#4a90e2" stroke-width="1.5"/>
-                <path d="M3 10h18" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M8 3v4M16 3v4" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/>
-                <rect x="7" y="13.5" width="3" height="3" rx="0.5" fill="#4a90e2"/>
-              </svg>
+              <img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Book%20Demo.png" alt="Book a demo" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />
             </a>
           </div>
 
@@ -533,7 +555,7 @@
         </div>
 
         <!-- Disclaimer -->
-        <p id="sig-disclaimer">The content of this message is confidential. If you have received it by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed and is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p>
+        <p id="sig-disclaimer">The content of this message is confidential. If you received this by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed, and it is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p>
 
       </div><!-- /sig-root -->
 
@@ -545,7 +567,7 @@
 
     <!-- Fallback: shown if clipboard API can't write rich HTML -->
     <div id="copy-fallback" style="display:none;margin-top:0;">
-      <p style="font-size:12px;font-weight:600;color:#3a3a3a;margin-bottom:8px;">
+      <p style="font-size:14px;font-weight:600;color:#3a3a3a;margin-bottom:8px;">
         Your browser blocked the rich copy. Select all the code below and paste it into your email client's signature HTML editor instead:
       </p>
       <textarea id="copy-fallback-ta" readonly
@@ -600,8 +622,10 @@ function update() {
     }
     wrap.querySelector('img').src = photoUrl;
     wrap.querySelector('img').alt = name;
+    wrap.style.background = 'none';
   } else {
     if (existingImg) existingImg.remove();
+    wrap.style.background = '#e8e8e8';
   }
 
   // Icon hrefs
@@ -697,9 +721,9 @@ function buildSignatureHTML() {
 
   const iconStyle = `display:inline-flex;align-items:center;justify-content:center;width:37.33px;height:37.33px;border-radius:156px;background:#f5f5f5;text-decoration:none;`;
 
-  const svgGlobe = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.5" stroke="#4a90e2" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="3.5" ry="9.5" stroke="#4a90e2" stroke-width="1.5"/><path d="M2.5 12h19" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/><path d="M4.5 7.5h15M4.5 16.5h15" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/></svg>`;
-  const svgLinkedIn = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.5195 0H1.47656C0.660156 0 0 0.644531 0 1.44141V18.5547C0 19.3516 0.660156 20 1.47656 20H18.5195C19.3359 20 20 19.3516 20 18.5586V1.44141C20 0.644531 19.3359 0 18.5195 0ZM5.93359 17.043H2.96484V7.49609H5.93359V17.043ZM4.44922 6.19531C3.49609 6.19531 2.72656 5.42578 2.72656 4.47656C2.72656 3.52734 3.49609 2.75781 4.44922 2.75781C5.39844 2.75781 6.16797 3.52734 6.16797 4.47656C6.16797 5.42187 5.39844 6.19531 4.44922 6.19531ZM17.043 17.043H14.0781V12.4023C14.0781 11.2969 14.0586 9.87109 12.5352 9.87109C10.9922 9.87109 10.7578 11.0781 10.7578 12.3242V17.043H7.79688V7.49609H10.6406V8.80078H10.6797C11.0742 8.05078 12.043 7.25781 13.4844 7.25781C16.4883 7.25781 17.043 9.23438 17.043 11.8047V17.043Z" fill="#4A90E2"/></svg>`;
-  const svgCalendar = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#4a90e2" stroke-width="1.5"/><path d="M3 10h18" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/><path d="M8 3v4M16 3v4" stroke="#4a90e2" stroke-width="1.5" stroke-linecap="round"/><rect x="7" y="13.5" width="3" height="3" rx="0.5" fill="#4a90e2"/></svg>`;
+  const svgGlobe = `<img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Website.png" alt="Website" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />`;
+  const svgLinkedIn = `<img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/LinkedIn.png" alt="LinkedIn" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />`;
+  const svgCalendar = `<img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Book%20Demo.png" alt="Book a demo" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />`;
 
   const makeIcon = (svg, url, label) => url
     ? `<a href="${esc(url)}" title="${esc(label)}" target="_blank" rel="noopener" style="${iconStyle}">${svg}</a>`
@@ -726,7 +750,7 @@ function buildSignatureHTML() {
   })();
 
   const disclaimerHTML = showDisclaimer
-    ? `<tr><td colspan="3" style="padding-top:16px;"><p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:9px;font-weight:400;line-height:14px;color:#7a7a7a;width:600px;">The content of this message is confidential. If you have received it by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed and is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p></td></tr>`
+    ? `<tr><td colspan="3" style="padding-top:16px;"><p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:9px;font-weight:400;line-height:14px;color:#7a7a7a;width:600px;">The content of this message is confidential. If you received this by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed, and it is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p></td></tr>`
     : '';
 
   return `<table cellpadding="0" cellspacing="0" border="0" style="font-family:'Barlow',Arial,sans-serif;width:600px;border-collapse:collapse;background:#ffffff;padding:16px;">
@@ -795,12 +819,29 @@ async function copySignature() {
 
 // ── Asset picker setup ──────────────────────────────────────────────────────
 // To add your own images, add URLs to these arrays:
-const PHOTO_ASSETS = [
-  // e.g. 'https://your-cdn.com/headshots/alice.jpg',
+const PORTRAITS = [
+  { name: 'Thomas',   full: 'Thomas Busk',             url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Circle%20Portrait%20-%20Thomas%20Busk.png' },
+  { name: 'Frederik', full: 'Frederik J.',              url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Email_Signature_Portrait_Frederik_J.png' },
+  { name: 'Emma',     full: 'Emma',                    url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Emma_Circle_Portrait.png' },
+  { name: 'Veronika', full: 'Veronika',                url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Email_Signature_Portrait_Veronika.png' },
+  { name: 'Simon',    full: 'Simon T.',                url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Email_Signature_Portrait_Simon_T.png' },
+  { name: 'Alex',     full: 'Alex',                    url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Alex_Portrait.png' },
+  { name: 'Simon',    full: 'Simon AO',                url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Email_Signature_Portrait_Simon_AO.png' },
+  { name: 'Bülle',    full: 'Bülle',                   url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/B%C3%BClle_Circle_Portrait.png' },
+  { name: 'Kristian', full: 'Kristian Venås Johnsen',  url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Circle%20Portrait%20-%20Kristian%20Ven%C3%A5s%20Johnsen.png' },
+  { name: 'Malthe',   full: 'Malthe',                  url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Email_Signature_Portrait_Malthe_2024.png' },
+  { name: 'Sander',   full: 'Sander',                  url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Email_Signature_Portrait_Sander_2024_2.png' },
+  { name: 'Rikke',    full: 'Rikke Christiansen',      url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/RikkeChristiansen_Circle_Portrait_3.png' },
+  { name: 'Sebastian',full: 'Sebastian',               url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Circle%20Portrait%20-%20Sebastian.png' },
+  { name: 'Nicoline', full: 'Nicoline Gotschalk Dalgaard', url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/NicolineGotshcalkDalgaard_Circle_Portrait.png' },
+  { name: 'Anna',     full: 'Anna Sophie Witte',       url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/AnnaSophieWitte_Circle_Portrait.png' },
+  { name: 'Beau',     full: 'Beau Bouwer',             url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Circle%20Portrait%20-%20Beau%20Bouwer.png' },
+  { name: 'Jaime',    full: 'Jaime',                   url: 'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Portraits/Circle%20Portrait%20-%20Jaime.png' },
 ];
+const PHOTO_ASSETS = PORTRAITS.map(p => p.url);
 
 const BANNER_ASSETS = [
-  // e.g. 'https://your-cdn.com/banners/campaign-q3.jpg',
+  'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Promotional%20Images/Placeholder%20Email%20Signature.jpg',
 ];
 
 function buildPicker(containerId, assets, fieldId, aspectClass) {
@@ -837,8 +878,102 @@ function buildPicker(containerId, assets, fieldId, aspectClass) {
   });
 }
 
-buildPicker('photo-picker',  PHOTO_ASSETS,  'f-photo',      '');
 buildPicker('banner-picker', BANNER_ASSETS, 'f-banner-img', 'banner');
+
+// ── Portrait picker with name matching + search ──────────────────────────────
+let selectedPortraitUrl = '';
+
+const PORTRAITS_INITIAL = 6;
+let portraitsExpanded = false;
+
+function renderPortraitPicker(filter) {
+  const container = $('photo-picker');
+  container.innerHTML = '';
+
+  const filtered = filter
+    ? PORTRAITS.filter(p => p.full.toLowerCase().includes(filter.toLowerCase()))
+    : PORTRAITS;
+
+  if (!filtered.length) {
+    container.innerHTML = '<p class="asset-picker-empty">No portraits found.</p>';
+    return;
+  }
+
+  // If searching or a selected portrait is beyond the fold, always expand
+  const selectedIndex = filtered.findIndex(p => p.url === selectedPortraitUrl);
+  const forceExpand = portraitsExpanded || (filter && filter.length > 0) || (selectedIndex >= PORTRAITS_INITIAL);
+  const visible = forceExpand ? filtered : filtered.slice(0, PORTRAITS_INITIAL);
+
+  visible.forEach(portrait => {
+    const item = document.createElement('div');
+    item.className = 'asset-picker-item' + (portrait.url === selectedPortraitUrl ? ' selected' : '');
+    item.title = portrait.full;
+    item.innerHTML = `
+      <img src="${portrait.url}" alt="${portrait.full}" loading="lazy" />
+      <div class="portrait-label">${portrait.full}</div>
+      <span class="check">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>`;
+    item.addEventListener('click', () => {
+      if (selectedPortraitUrl === portrait.url) {
+        selectedPortraitUrl = '';
+        $('f-photo').value = '';
+      } else {
+        selectedPortraitUrl = portrait.url;
+        $('f-photo').value = portrait.url;
+      }
+      renderPortraitPicker($('portrait-search').value);
+      update();
+    });
+    container.appendChild(item);
+  });
+
+  // Show more / show less button
+  if (!filter && filtered.length > PORTRAITS_INITIAL) {
+    const btn = document.createElement('button');
+    btn.className = 'picker-show-more';
+    btn.textContent = forceExpand
+      ? `Show less ↑`
+      : `Show ${filtered.length - PORTRAITS_INITIAL} more ↓`;
+    btn.addEventListener('click', () => {
+      portraitsExpanded = !portraitsExpanded;
+      renderPortraitPicker($('portrait-search').value);
+    });
+    container.appendChild(btn);
+  }
+}
+
+function autoMatchPortrait(name) {
+  if (!name) return;
+  const firstName = name.trim().split(' ')[0].toLowerCase();
+  const matches = PORTRAITS.filter(p => p.name.toLowerCase() === firstName);
+  if (matches.length === 1) {
+    // Exact single match — auto-select
+    selectedPortraitUrl = matches[0].url;
+    $('f-photo').value = matches[0].url;
+    renderPortraitPicker($('portrait-search').value);
+    update();
+  } else if (matches.length > 1) {
+    // Multiple matches (e.g. two Simons) — filter picker to show them
+    $('portrait-search').value = firstName;
+    renderPortraitPicker(firstName);
+  }
+}
+
+// Search input
+$('portrait-search').addEventListener('input', e => {
+  renderPortraitPicker(e.target.value);
+});
+
+// Auto-match when name field changes
+$('f-name').addEventListener('input', e => {
+  const firstName = e.target.value.trim().split(' ')[0];
+  if (firstName.length >= 2) autoMatchPortrait(firstName);
+});
+
+renderPortraitPicker('');
 
 // Init
 update();
