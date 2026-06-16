@@ -322,6 +322,7 @@
     gap: 8px;
     align-self: stretch;
     justify-content: center;
+    align-items: flex-end;
     flex-shrink: 0;
   }
 
@@ -422,8 +423,12 @@
     </div>
 
     <div class="field">
-      <label for="f-bookdemo">Book demo URL</label>
-      <input id="f-bookdemo" type="url" placeholder="https://zuuvi.com/schedule-demo" value="https://www.zuuvi.com/schedule-demo" />
+      <label for="f-cta-label">CTA button label</label>
+      <input id="f-cta-label" type="text" placeholder="Book a meeting" value="Book a meeting" />
+    </div>
+    <div class="field">
+      <label for="f-cta-url">CTA button URL</label>
+      <input id="f-cta-url" type="url" placeholder="https://www.zuuvi.com/schedule-demo" value="https://www.zuuvi.com/schedule-demo" />
     </div>
 
     <div class="panel-section-title">Profile photo</div>
@@ -464,16 +469,7 @@
       </div>
     </div>
 
-    <div class="panel-section-title">Disclaimer</div>
 
-    <div class="toggle-row">
-      <label for="t-disclaimer">Show disclaimer</label>
-      <label class="toggle">
-        <input type="checkbox" id="t-disclaimer" checked />
-        <span class="toggle-track"></span>
-        <span class="toggle-thumb"></span>
-      </label>
-    </div>
 
   </aside>
 
@@ -529,9 +525,7 @@
             <a class="sig-icon-btn" id="sig-icon-linkedin" href="https://www.linkedin.com/company/zuuvi" title="LinkedIn" target="_blank" rel="noopener">
               <img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/LinkedIn.png" alt="LinkedIn" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />
             </a>
-            <a class="sig-icon-btn" id="sig-icon-bookdemo" href="https://www.zuuvi.com/schedule-demo" title="Book a demo" target="_blank" rel="noopener">
-              <img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Book%20Demo.png" alt="Book a demo" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />
-            </a>
+            <a id="sig-cta-btn" href="https://www.zuuvi.com/schedule-demo" target="_blank" rel="noopener" style="display:inline-block;background:#4a90e2;color:#fefefe;font-family:'Inter',Arial,sans-serif;font-size:12px;font-weight:700;line-height:32px;text-decoration:none;padding:0 12px;border-radius:4px;white-space:nowrap;height:32px;">Book a meeting</a>
           </div>
 
         </div><!-- /profile-section -->
@@ -579,12 +573,12 @@ function update() {
   const email    = field('f-email');
   const website  = field('f-website');
   const linkedin = field('f-linkedin');
-  const bookdemo = field('f-bookdemo');
+  const ctaLabel = field('f-cta-label') || 'Book a meeting';
+  const ctaUrl   = field('f-cta-url');
   const photoUrl = field('f-photo');
   const bannerImg  = field('f-banner-img');
   const bannerLink = field('f-banner-link');
   const showBanner = $('t-banner').checked;
-  const showDisclaimer = $('t-disclaimer').checked;
 
   // Name
   $('sig-name').textContent = name || 'Your Name';
@@ -619,13 +613,15 @@ function update() {
   // Icon hrefs
   $('sig-icon-website').href  = website  || '#';
   $('sig-icon-linkedin').href = linkedin || '#';
-  $('sig-icon-bookdemo').href = bookdemo || '#';
+  const ctaBtn = $('sig-cta-btn');
+  ctaBtn.href = ctaUrl || '#';
+  ctaBtn.textContent = ctaLabel;
 
   // Hide icon buttons with no URL
   $('sig-icon-website').style.display  = website  ? '' : 'none';
   $('sig-icon-linkedin').style.display = linkedin ? '' : 'none';
-  $('sig-icon-bookdemo').style.display = bookdemo ? '' : 'none';
-  $('sig-icons-col').style.display = (website || linkedin || bookdemo) ? '' : 'none';
+  ctaBtn.style.display = ctaUrl ? '' : 'none';
+  $('sig-icons-col').style.display = (website || linkedin || ctaUrl) ? '' : 'none';
 
   // Banner
   const bannerWrap = $('sig-banner-wrap');
@@ -673,8 +669,8 @@ function update() {
     }
   }
 
-  // Disclaimer
-  $('sig-disclaimer').style.display = showDisclaimer ? '' : 'none';
+  // Disclaimer always shown
+  $('sig-disclaimer').style.display = '';
 }
 
 // ── Banner toggle ────────────────────────────────────────────────────────────
@@ -686,7 +682,6 @@ $('t-banner').addEventListener('change', () => {
 // ── Wire all inputs ──────────────────────────────────────────────────────────
 document.querySelectorAll('input[type="text"], input[type="url"], input[type="tel"], input[type="email"]')
   .forEach(el => el.addEventListener('input', update));
-$('t-disclaimer').addEventListener('change', update);
 
 // ── Build email-safe signature HTML ─────────────────────────────────────────
 function buildSignatureHTML() {
@@ -696,12 +691,12 @@ function buildSignatureHTML() {
   const email    = field('f-email');
   const website  = field('f-website');
   const linkedin = field('f-linkedin');
-  const bookdemo = field('f-bookdemo');
+  const ctaLabel = field('f-cta-label') || 'Book a meeting';
+  const ctaUrl   = field('f-cta-url');
   const photoUrl = field('f-photo');
   const bannerImg  = field('f-banner-img');
   const bannerLink = field('f-banner-link');
   const showBanner     = $('t-banner').checked;
-  const showDisclaimer = $('t-disclaimer').checked;
 
   const photoCell = photoUrl
     ? `<img src="${esc(photoUrl)}" alt="${esc(name)}" width="128" height="128" style="width:128px;height:128px;object-fit:cover;border-radius:8px;display:block;" />`
@@ -711,7 +706,7 @@ function buildSignatureHTML() {
 
   const svgGlobe = `<img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Website.png" alt="Website" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />`;
   const svgLinkedIn = `<img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/LinkedIn.png" alt="LinkedIn" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />`;
-  const svgCalendar = `<img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/Book%20Demo.png" alt="Book a demo" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />`;
+
 
   const makeIcon = (svg, url, label) => url
     ? `<a href="${esc(url)}" title="${esc(label)}" target="_blank" rel="noopener" style="${iconStyle}">${svg}</a>`
@@ -720,14 +715,19 @@ function buildSignatureHTML() {
   const icons = [
     makeIcon(svgGlobe,    website,  'Website'),
     makeIcon(svgLinkedIn, linkedin, 'LinkedIn'),
-    makeIcon(svgCalendar, bookdemo, 'Book a demo'),
+
   ].filter(Boolean);
 
-  const iconsCol = icons.length
-    ? `<td style="padding-left:16px;vertical-align:middle;">
-        <table cellpadding="0" cellspacing="0" border="0"><tr><td>
-          ${icons.join('<br style="line-height:8px;" />')}
-        </td></tr></table>
+  const ctaBtnHTML = ctaUrl
+    ? `<a href="${esc(ctaUrl)}" target="_blank" rel="noopener" style="display:inline-block;background:#4a90e2;color:#fefefe;font-family:'Inter',Arial,sans-serif;font-size:12px;font-weight:700;line-height:32px;text-decoration:none;padding:0 12px;border-radius:4px;white-space:nowrap;height:32px;">${escText(ctaLabel)}</a>`
+    : '';
+
+  const iconsCol = (icons.length || ctaBtnHTML)
+    ? `<td style="padding-left:16px;vertical-align:middle;text-align:right;">
+        <table cellpadding="0" cellspacing="0" border="0" align="right">
+          ${icons.map(i => `<tr><td style="padding-bottom:8px;text-align:right;">${i}</td></tr>`).join('')}
+          ${ctaBtnHTML ? `<tr><td style="text-align:right;">${ctaBtnHTML}</td></tr>` : ''}
+        </table>
       </td>`
     : '';
 
@@ -737,9 +737,7 @@ function buildSignatureHTML() {
     return `<tr><td colspan="3" style="padding-top:16px;">${bannerLink ? `<a href="${esc(bannerLink)}" target="_blank" rel="noopener">${img}</a>` : img}</td></tr>`;
   })();
 
-  const disclaimerHTML = showDisclaimer
-    ? `<tr><td colspan="3" style="padding-top:16px;"><p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:9px;font-weight:400;line-height:1.4;color:#7a7a7a;width:600px;">The content of this message is confidential. If you received this by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed, and it is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p></td></tr>`
-    : '';
+  const disclaimerHTML = `<tr><td colspan="3" style="padding-top:16px;"><p style="margin:0;font-family:'Inter',Arial,sans-serif;font-size:9px;font-weight:400;line-height:1.4;color:#7a7a7a;width:600px;">The content of this message is confidential. If you received this by mistake, please inform us by replying to the email and deleting the message. Any use, distribution, copying, or disclosure by any other person is strictly prohibited. The security of this email cannot be guaranteed, and it is opened at the recipient's own risk. The sender will not be held liable for any damage caused by the message.</p></td></tr>`;
 
   return `<table cellpadding="0" cellspacing="0" border="0" style="font-family:'Barlow',Arial,sans-serif;width:632px;border-collapse:collapse;background:#ffffff;border-radius:16px;">
   <tr>
@@ -835,7 +833,7 @@ const PORTRAITS = [
 const PHOTO_ASSETS = PORTRAITS.map(p => p.url);
 
 const BANNER_ASSETS = [
-  'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Promotional%20Images/Placeholder%20Email%20Signature.jpg',
+  'https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Promotional%20Images/Zuuvi%20Socials%20-%20Email%20Signature%20Promotional%20Image.jpg',
 ];
 
 function buildPicker(containerId, assets, fieldId, aspectClass) {
