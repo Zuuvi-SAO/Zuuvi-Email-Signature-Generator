@@ -418,7 +418,7 @@
     </div>
 
     <div class="field">
-      <label for="f-linkedin">LinkedIn URL</label>
+      <label for="f-linkedin">Your personal LinkedIn URL</label>
       <input id="f-linkedin" type="url" placeholder="https://linkedin.com/company/..." value="https://www.linkedin.com/company/zuuvi" />
     </div>
 
@@ -465,7 +465,7 @@
       </div>
       <div class="field">
         <label for="f-banner-link">Banner link URL</label>
-        <input id="f-banner-link" type="url" placeholder="https://zuuvi.com/campaign" value="" />
+        <input id="f-banner-link" type="url" placeholder="https://zuuvi.com/campaign" value="https://www.zuuvi.com" />
       </div>
     </div>
 
@@ -871,6 +871,14 @@ function buildPicker(containerId, assets, fieldId, aspectClass) {
 }
 
 buildPicker('banner-picker', BANNER_ASSETS, 'f-banner-img', 'banner');
+
+// Auto-select the first (latest) banner
+if (BANNER_ASSETS.length) {
+  $('f-banner-img').value = BANNER_ASSETS[0];
+  // Mark it as selected in the picker
+  const firstBannerItem = $('banner-picker').querySelector('.asset-picker-item');
+  if (firstBannerItem) firstBannerItem.classList.add('selected');
+}
 
 // ── Portrait picker with name matching + search ──────────────────────────────
 let selectedPortraitUrl = '';
