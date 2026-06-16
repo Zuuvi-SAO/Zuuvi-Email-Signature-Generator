@@ -525,7 +525,7 @@
             <a class="sig-icon-btn" id="sig-icon-linkedin" href="https://www.linkedin.com/company/zuuvi" title="LinkedIn" target="_blank" rel="noopener">
               <img src="https://7757613.fs1.hubspotusercontent-na1.net/hubfs/7757613/_EMAIL%20SIGNATURE%20RESOURCES/Misc/LinkedIn.png" alt="LinkedIn" width="37" height="37" style="width:37.33px;height:37.33px;display:block;" />
             </a>
-            <a id="sig-cta-btn" href="https://www.zuuvi.com/schedule-demo" target="_blank" rel="noopener" style="display:inline-block;background:#4a90e2;color:#fefefe;font-family:'Inter',Arial,sans-serif;font-size:12px;font-weight:700;line-height:32px;text-decoration:none;padding:0 12px;border-radius:4px;white-space:nowrap;height:32px;">Book a meeting</a>
+            <a id="sig-cta-btn" href="https://www.zuuvi.com/schedule-demo" target="_blank" rel="noopener" style="display:inline-block;background:#4a90e2;color:#fefefe;font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:700;line-height:1.2;text-decoration:none;padding:7px 12px;border-radius:4px;white-space:nowrap;vertical-align:middle;">Book a meeting</a>
           </div>
 
         </div><!-- /profile-section -->
@@ -719,7 +719,7 @@ function buildSignatureHTML() {
   ].filter(Boolean);
 
   const ctaBtnHTML = ctaUrl
-    ? `<a href="${esc(ctaUrl)}" target="_blank" rel="noopener" style="display:inline-block;background:#4a90e2;color:#fefefe;font-family:'Inter',Arial,sans-serif;font-size:12px;font-weight:700;line-height:32px;text-decoration:none;padding:0 12px;border-radius:4px;white-space:nowrap;height:32px;">${escText(ctaLabel)}</a>`
+    ? `<a href="${esc(ctaUrl)}" target="_blank" rel="noopener" style="display:inline-block;background:#4a90e2;color:#fefefe;font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:700;line-height:1.2;text-decoration:none;padding:7px 12px;border-radius:4px;white-space:nowrap;vertical-align:middle;">${escText(ctaLabel)}</a>`
     : '';
 
   const iconsCol = (icons.length || ctaBtnHTML)
